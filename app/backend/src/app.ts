@@ -1,13 +1,14 @@
 import * as express from 'express';
+// import LoginController from './controllers/LoginController';
+import loginRoutes from './routes/LoginRoutes';
 
 class App {
   public app: express.Express;
-  // ...
+  public login = loginRoutes;
 
   constructor() {
     this.app = express();
     this.config();
-    // ...
   }
 
   private config():void {
@@ -17,14 +18,14 @@ class App {
       res.header('Access-Control-Allow-Headers', '*');
       next();
     };
-
+    this.app.use(express.json());
     this.app.use(accessControl);
-    // ...
+    this.app.use('/login', loginRoutes);
   }
 
   // ...
   public start(PORT: string | number):void {
-    this.app.listen(PORT);
+    this.app.listen(PORT, () => console.log(`listening on ${PORT}`));
   }
 }
 
