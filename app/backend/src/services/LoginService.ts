@@ -22,6 +22,13 @@ class LoginService {
       token: userToken,
     } as ILogin;
   };
+
+  public loginValidate = async (userId: number): Promise<string> => {
+    const user = await User.findByPk(userId);
+    if (!user) return ('non-existent user');
+
+    return user.role;
+  };
 }
 
 export default LoginService;
