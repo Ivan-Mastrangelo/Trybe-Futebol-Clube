@@ -21,6 +21,24 @@ class LoginController {
       next(error);
     }
   };
+
+  public loginValidate = async (req: Request, res: Response, next: NextFunction):
+  Promise<Response | void> => {
+    try {
+      // const { password } = req.body;
+      const userId = req.body.user;
+
+      const userRole = await this.service.loginValidate(userId);
+
+      if (userRole === 'non-existent user') {
+        return res.status(StatusCodes.NOT_FOUND).json({ message: 'User not found' });
+      }
+
+      return res.status(StatusCodes.OK).json(userRole);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default LoginController;
