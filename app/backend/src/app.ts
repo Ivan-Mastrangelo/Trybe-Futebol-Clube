@@ -1,4 +1,5 @@
 import * as express from 'express';
+import errorHandler from './middlewares/ErrorHandler';
 // import LoginController from './controllers/LoginController';
 import loginRoutes from './routes/LoginRoutes';
 
@@ -21,6 +22,7 @@ class App {
     this.app.use(express.json());
     this.app.use(accessControl);
     this.app.use('/login', loginRoutes);
+    this.app.use(errorHandler);
   }
 
   // ...
