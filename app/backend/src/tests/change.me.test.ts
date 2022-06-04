@@ -19,91 +19,93 @@ const { expect } = chai;
 describe('testar a integridade da rota /login', () => {
   describe('Em caso de sucesso', () => { 
 
-  let chaiHttpResponse: Response;
+    let chaiHttpResponse: Response;
 
-  before(async () => {
-    sinon
-      .stub(User, 'findOne')
-      .resolves({
+    before(async () => {
+      sinon
+        .stub(User, 'findOne')
+        .resolves({
           id: 1,
           username: 'Admin',
           role: 'admin',
           email: 'admin@admin',
           password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
-      } as User);
+        } as User);
+    });
+
+    after(() => {
+      (User.findOne as sinon.SinonStub).restore();
+    });
+
+    it('Com email e password corretos', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({
+          email: 'admin@admin.com',
+          password: 'secret_admin'
+        });
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body).to.have.property('user');
+      expect(chaiHttpResponse.body).to.have.property('token');
+    });
   });
 
-  after(() => {
-    (User.findOne as sinon.SinonStub).restore();
-  });
-
-  it('Com email e password corretos', async () => {
-    chaiHttpResponse = await chai
-       .request(app)
-       .post('/login')
-       .send({
-        email: 'admin@admin.com',
-        password: 'secret_admin'
-       });
-
-    expect(chaiHttpResponse.status).to.be.equal(200);
-    expect(chaiHttpResponse.body).to.have.property('user');
-    expect(chaiHttpResponse.body).to.have.property('token');
-  });
-});
   describe('Em casos de erros', () => {
     let chaiHttpResponse: Response;
 
-  before(async () => {
-    sinon
-      .stub(User, 'findOne')
-      .resolves();
-  });
+    before(async () => {
+      sinon
+        .stub(User, 'findOne')
+        .resolves();
+    });
 
-  after(() => {
-    (User.findOne as sinon.SinonStub).restore();
-  });
+    after(() => {
+      (User.findOne as sinon.SinonStub).restore();
+    });
 
     it('Em caso da requisição vir com email inválido', async () => {
       chaiHttpResponse = await chai
-         .request(app)
-         .post('/login')
-         .send({
-           password: 'secret_admin',
-           email: 'adm@admin.com'
-         });
+        .request(app)
+        .post('/login')
+        .send({
+          password: 'secret_admin',
+          email: 'adm@admin.com'
+        });
+
       expect(chaiHttpResponse.status).to.be.equal(401);
       expect(chaiHttpResponse.body.message).to.be.equal('Incorrect email or password');
     });
 
     it('Em caso da requisição vir com Password inválido', async () => {
       chaiHttpResponse = await chai
-         .request(app)
-         .post('/login')
-         .send({
-           password: 'sect_admin',
-           email: 'admin@admin.com'
-         });
+        .request(app)
+        .post('/login')
+        .send({
+          password: 'sect_admin',
+          email: 'admin@admin.com'
+        });
       expect(chaiHttpResponse.status).to.be.equal(401);
       expect(chaiHttpResponse.body.message).to.be.equal('Incorrect email or password');
     });
 
     it('Em caso da requisição vir sem o campo email', async () => {
       chaiHttpResponse = await chai
-         .request(app)
-         .post('/login')
-         .send({
-           password: 'secret_admin'
-         });
+        .request(app)
+        .post('/login')
+        .send({
+          password: 'secret_admin'
+        });
       expect(chaiHttpResponse.status).to.be.equal(400);
       expect(chaiHttpResponse.body.message).to.be.equal('All fields must be filled');
     });
 
     it('Em caso da requisição vir sem o campo password', async () => {
       chaiHttpResponse = await chai
-         .request(app)
-         .post('/login')
-         .send({
+        .request(app)
+        .post('/login')
+        .send({
           email: 'admin@admin.com'
          });
       expect(chaiHttpResponse.status).to.be.equal(400);
@@ -111,7 +113,37 @@ describe('testar a integridade da rota /login', () => {
     });
   });
 
-  describe('testar a rota /loginValidate da rota login', () => {
+  describe('Em caso de haver erro no tipo de dado na requisição', () => {
+
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      const error = new Error();
+      sinon
+        .stub(User, 'findOne')
+        .throws(error);
+    });
+  
+    after(() => {
+      (User.findOne as sinon.SinonStub).restore();
+    });
+
+    it('', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/login')
+        .send({
+          email: 'admin@admin.com',
+          password: 'secret_admin'
+        });
+      expect(chaiHttpResponse.status).to.be.equal(500);
+      expect(chaiHttpResponse.body.message).to.be.equal('Wow! Something is wrong');
+    });
+  });
+});
+
+
+describe('testar a rota /loginValidate da rota login', () => {
     describe('Em casos de sucesso', () => {
 
       let chaiHttpResponse: Response;
@@ -186,6 +218,6 @@ describe('testar a integridade da rota /login', () => {
         expect(chaiHttpResponse.body.message).to.be.equal('Invalid token');
       });
     });
-  });
 });
+
 
