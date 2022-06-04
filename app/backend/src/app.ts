@@ -1,12 +1,13 @@
 import * as express from 'express';
 import errorHandler from './middlewares/ErrorHandler';
-// import LoginController from './controllers/LoginController';
+import teamRoutes from './routes/TeamRoutes';
 import loginRoutes from './routes/LoginRoutes';
 
 class App {
   public app: express.Express;
   public login = loginRoutes;
-
+  public teams = teamRoutes;
+  // public midError = errorHandler;
   constructor() {
     this.app = express();
     this.config();
@@ -22,6 +23,7 @@ class App {
     this.app.use(express.json());
     this.app.use(accessControl);
     this.app.use('/login', loginRoutes);
+    this.app.use('/teams', teamRoutes);
     this.app.use(errorHandler);
   }
 
