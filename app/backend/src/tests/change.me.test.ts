@@ -6,11 +6,11 @@ import * as jwt from 'jsonwebtoken';
 
 import { app } from '../app';
 import User from '../database/models/UserModel';
+import Team from '../database/models/TeamModel';
 
 import { Response } from 'superagent';
 import TokenGenerate from '../helpers/TokenGenerate';
 
-import { invalid } from 'joi';
 
 chai.use(chaiHttp);
 
@@ -118,10 +118,10 @@ describe('testar a integridade da rota /login', () => {
     let chaiHttpResponse: Response;
 
     before(async () => {
-      const error = new Error();
+      const serverError = new Error();
       sinon
         .stub(User, 'findOne')
-        .throws(error);
+        .throws(serverError);
     });
   
     after(() => {
@@ -141,7 +141,6 @@ describe('testar a integridade da rota /login', () => {
     });
   });
 });
-
 
 describe('testar a rota /loginValidate da rota login', () => {
     describe('Em casos de sucesso', () => {
@@ -218,6 +217,46 @@ describe('testar a rota /loginValidate da rota login', () => {
         expect(chaiHttpResponse.body.message).to.be.equal('Invalid token');
       });
     });
+});
+
+describe('testar a integridade da rota /teams', () => {
+  describe('Em caso de sucesso', () => {
+    const teamsArray = [
+      {
+        "id": 1,
+        "teamName": "Avaí/Kindermann"
+      },
+      {
+        "id": 2,
+        "teamName": "Bahia"
+      },
+      {
+        "id": 3,
+        "teamName": "Botafogo"
+      },
+    ];
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Team, 'findAll')
+        .resolves(teamsArray as Team[]);
+    });
+
+    after(() => {
+      (Team.findAll as sinon.SinonStub).restore();
+    });
+
+    it('Verifica se status code 200 e propriedades dos objetos do array', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/teams')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body[0]).to.have.property('id');
+      expect(chaiHttpResponse.body[0]).to.have.property('teamName');
+    });
+  });
 });
 
 
