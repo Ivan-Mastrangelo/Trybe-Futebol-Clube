@@ -128,7 +128,7 @@ describe('testar a integridade da rota /login', () => {
       (User.findOne as sinon.SinonStub).restore();
     });
 
-    it('', async () => {
+    it('Com retorno de erro', async () => {
       chaiHttpResponse = await chai
         .request(app)
         .post('/login')
@@ -235,6 +235,7 @@ describe('testar a integridade da rota /teams', () => {
         "teamName": "Botafogo"
       },
     ];
+
     let chaiHttpResponse: Response;
 
     before(async () => {
@@ -257,6 +258,34 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.body[0]).to.have.property('teamName');
     });
   });
+  describe('Testar a integridade da rota /teams/id', () => {
+        
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Team, 'findByPk')
+        .resolves({
+          "id": 1,
+          "teamName": "Avaí/Kindermann" 
+        } as Team);
+    });
+
+    after(() => {
+      (Team.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('Verifica se status code 200 e propriedades dos objetos do array', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/teams/:id')
+        .set('params', 'id: 1')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body).to.have.property('id');
+      expect(chaiHttpResponse.body).to.have.property('teamName');
+    });
+  })
 });
 
 
