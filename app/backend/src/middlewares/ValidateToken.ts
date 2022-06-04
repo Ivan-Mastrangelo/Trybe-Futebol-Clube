@@ -1,7 +1,6 @@
 import * as fs from 'fs';
 import { Request, Response, NextFunction } from 'express';
 import * as jwt from 'jsonwebtoken';
-// import jwt = require('jsonwebtoken');
 import { StatusCodes } from 'http-status-codes';
 import IToken from '../interfaces/TokenInterface';
 
