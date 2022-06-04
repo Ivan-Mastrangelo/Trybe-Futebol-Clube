@@ -25,7 +25,6 @@ class LoginController {
   public loginValidate = async (req: Request, res: Response, next: NextFunction):
   Promise<Response | void> => {
     try {
-      // const { password } = req.body;
       const userId = req.body.user;
 
       const userRole = await this.service.loginValidate(userId);
