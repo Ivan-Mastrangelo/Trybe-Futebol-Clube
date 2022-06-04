@@ -7,6 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import { app } from '../app';
 import User from '../database/models/UserModel';
 import Team from '../database/models/TeamModel';
+import Matche from '../database/models/MatcheModel';
 
 import { Response } from 'superagent';
 import TokenGenerate from '../helpers/TokenGenerate';
@@ -286,6 +287,61 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.body).to.have.property('teamName');
     });
   })
+
+  describe('Testar integridade da rota /matches', () => {
+    const matchesArray = [
+      {
+        "id": 1,
+        "homeTeam": 16,
+        "homeTeamGoals": 1,
+        "awayTeam": 8,
+        "awayTeamGoals": 1,
+        "inProgress": false,
+        "teamHome": {
+          "teamName": "São Paulo"
+        },
+        "teamAway": {
+          "teamName": "Grêmio"
+        }
+      },
+      {
+        "id": 41,
+        "homeTeam": 16,
+        "homeTeamGoals": 2,
+        "awayTeam": 9,
+        "awayTeamGoals": 0,
+        "inProgress": true,
+        "teamHome": {
+          "teamName": "São Paulo"
+        },
+        "teamAway": {
+          "teamName": "Internacional"
+        }
+      },
+    ];
+
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'findAll')
+        .resolves(matchesArray as unknown as Matche[]);
+    });
+
+    after(() => {
+      (Matche.findAll as sinon.SinonStub).restore();
+    });
+
+    it('Verifica se status code 200 e propriedades dos objetos do array', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/matches')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.body[0]).to.have.property('id');
+      expect(chaiHttpResponse.body[0]).to.have.property('teamName');
+    });
+  });
 });
 
 
