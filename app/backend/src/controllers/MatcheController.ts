@@ -25,6 +25,29 @@ class MatcheController {
       next(error);
     }
   };
+
+  public createMatcheInProgress = async (req: Request, res: Response, next: NextFunction)
+  :Promise<Response | void> => {
+    try {
+      const { homeTeam, homeTeamGoals, awayTeam, awayTeamGoals } = req.body;
+      const newInProgressMatche = await this.service
+        .createMatcheInProgress(homeTeam, homeTeamGoals, awayTeam, awayTeamGoals);
+      return res.status(StatusCodes.CREATED).json(newInProgressMatche);
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public setMatcheToFinished = async (req: Request, res: Response, next: NextFunction)
+  :Promise<Response | void> => {
+    try {
+      const { id } = req.params;
+      const changedMatcheStatus = await this.service.setMatcheToFinished(+id);
+      return res.status(StatusCodes.OK).json(changedMatcheStatus);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default MatcheController;
