@@ -55,6 +55,28 @@ class MatcheService {
     });
     return finishedMatches;
   };
+
+  public createMatcheInProgress = async (
+    homeTeam: number,
+    homeTeamGoals: number,
+    awayTeam: number,
+    awayTeamGoals: number,
+  ): Promise<Matche> => {
+    const newMatche = await Matche.create({
+      homeTeam,
+      homeTeamGoals,
+      awayTeam,
+      awayTeamGoals,
+      inProgress: true,
+    });
+    return newMatche;
+  };
+
+  public setMatcheToFinished = async (id: number): Promise<object> => {
+    await Matche.update({ inProgress: 'false' }, { where: { id } });
+
+    return { message: 'Finished' };
+  };
 }
 
 export default MatcheService;
