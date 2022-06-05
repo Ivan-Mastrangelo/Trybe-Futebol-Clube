@@ -348,6 +348,22 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.body[0]).to.have.property('teamAway');
 
     });
+
+    it('Verifica se com parametro de pesquisa por partidas em andamento retorna estatus 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/matches?inProgress=true')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+    })
+
+    it('Verifica se com parametro de pesquisa por partidas finalizadas retorna estatus 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/matches?inProgress=false')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+    })
   });
 });
 
