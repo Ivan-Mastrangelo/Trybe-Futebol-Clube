@@ -13,7 +13,7 @@ class TeamController {
       return res.status(StatusCodes.OK).json(allTeams);
     } catch (error) {
       next(error);
-    };
+    }
   };
 
   public getTeamById = async (req: Request, res: Response, next: NextFunction)
