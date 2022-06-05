@@ -152,11 +152,11 @@ describe('testar a rota /loginValidate da rota login', () => {
         sinon
           .stub(User, 'findByPk')
           .resolves({
-              id: 1,
-              username: 'Admin',
-              role: 'admin',
-              email: 'admin@admin',
-              password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+            id: 1,
+            username: 'Admin',
+            role: 'admin',
+            email: 'admin@admin',
+            password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
           } as User);
         sinon.stub(jwt, 'verify').resolves({ id: 1 })
       });
@@ -224,16 +224,16 @@ describe('testar a integridade da rota /teams', () => {
   describe('Em caso de sucesso', () => {
     const teamsArray = [
       {
-        "id": 1,
-        "teamName": "Avaí/Kindermann"
+        id: 1,
+        teamName: "Avaí/Kindermann"
       },
       {
-        "id": 2,
-        "teamName": "Bahia"
+        id: 2,
+        teamName: "Bahia"
       },
       {
-        "id": 3,
-        "teamName": "Botafogo"
+        id: 3,
+        teamName: "Botafogo"
       },
     ];
 
@@ -267,8 +267,8 @@ describe('testar a integridade da rota /teams', () => {
       sinon
         .stub(Team, 'findByPk')
         .resolves({
-          "id": 1,
-          "teamName": "Avaí/Kindermann" 
+          id: 1,
+          teamName: "Avaí/Kindermann" 
         } as Team);
     });
 
@@ -288,34 +288,34 @@ describe('testar a integridade da rota /teams', () => {
     });
   })
 
-  describe('Testar integridade da rota /matches', () => {
+  describe('Testar integridade da rota /matches com o método Get', () => {
     const matchesArray = [
       {
-        "id": 1,
-        "homeTeam": 16,
-        "homeTeamGoals": 1,
-        "awayTeam": 8,
-        "awayTeamGoals": 1,
-        "inProgress": false,
-        "teamHome": {
-          "teamName": "São Paulo"
+        id: 1,
+        homeTeam: 16,
+        homeTeamGoals: 1,
+        awayTeam: 8,
+        awayTeamGoals: 1,
+        inProgress: false,
+        teamHome: {
+          teamName: "São Paulo"
         },
-        "teamAway": {
-          "teamName": "Grêmio"
+        teamAway: {
+          teamName: "Grêmio"
         }
       },
       {
-        "id": 41,
-        "homeTeam": 16,
-        "homeTeamGoals": 2,
-        "awayTeam": 9,
-        "awayTeamGoals": 0,
-        "inProgress": true,
-        "teamHome": {
-          "teamName": "São Paulo"
+        id: 41,
+        homeTeam: 16,
+        homeTeamGoals: 2,
+        awayTeam: 9,
+        awayTeamGoals: 0,
+        inProgress: true,
+        teamHome: {
+          teamName: "São Paulo"
         },
-        "teamAway": {
-          "teamName": "Internacional"
+        teamAway: {
+          teamName: "Internacional"
         }
       },
     ];
@@ -364,6 +364,66 @@ describe('testar a integridade da rota /teams', () => {
 
       expect(chaiHttpResponse.status).to.be.equal(200);
     })
+  });
+  describe('Testar integridade da rota /matches com o método Post', () => {
+
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'create')
+        .resolves({
+            id: 1,
+            homeTeam: 16,
+            homeTeamGoals: 2,
+            awayTeam: 8,
+            awayTeamGoals: 2,
+            inProgress: true,
+          } as unknown as Matche);
+      sinon.stub(jwt, 'verify').resolves({ id: 1 })
+    });
+
+    after(() => {
+      (Matche.create as sinon.SinonStub).restore();
+      (jwt.verify as sinon.SinonStub).restore();
+    });
+    it('Requisição retorna com status code 201', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', 'token')
+        .send({
+          homeTeam: 16,
+          awayTeam: 8,
+          homeTeamGoals: 2,
+          awayTeamGoals: 2,
+          inProgress: true
+    });
+      expect(chaiHttpResponse.status).to.be.equal(201);
+    });
+  });
+  describe('Testar integridade da rota /matches/:id/finish com o método Patch', () => {
+
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'update')
+        .resolves({ message: "Finished" } as any);
+    });
+
+    after(() => {
+      (Matche.update as sinon.SinonStub).restore();
+    });
+
+    it('Requisição retorna com status code 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .patch('/matches/48/finish')
+        .set('params', 'id: 48')
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+    });
   });
 });
 
