@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response, NextFunction } from 'express';
 import TeamService from '../services/TeamService';
-import { number, string } from 'joi';
 
 class TeamController {
   public service = new TeamService();
