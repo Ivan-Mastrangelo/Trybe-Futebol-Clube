@@ -339,7 +339,14 @@ describe('testar a integridade da rota /teams', () => {
 
       expect(chaiHttpResponse.status).to.be.equal(200);
       expect(chaiHttpResponse.body[0]).to.have.property('id');
-      expect(chaiHttpResponse.body[0]).to.have.property('teamName');
+      expect(chaiHttpResponse.body[0]).to.have.property('homeTeam');
+      expect(chaiHttpResponse.body[0]).to.have.property('homeTeamGoals');
+      expect(chaiHttpResponse.body[0]).to.have.property('awayTeam');
+      expect(chaiHttpResponse.body[0]).to.have.property('awayTeamGoals');
+      expect(chaiHttpResponse.body[0]).to.have.property('inProgress');
+      expect(chaiHttpResponse.body[0]).to.have.property('teamHome');
+      expect(chaiHttpResponse.body[0]).to.have.property('teamAway');
+
     });
   });
 });
