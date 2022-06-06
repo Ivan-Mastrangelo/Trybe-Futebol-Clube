@@ -1,14 +1,15 @@
 import * as express from 'express';
+// import * as cors from 'cors';
 import errorHandler from './middlewares/ErrorHandler';
 import teamRoutes from './routes/TeamRoutes';
 import loginRoutes from './routes/LoginRoutes';
-import getAllMatches from './routes/MatchesRoutes';
+import matcheRoutes from './routes/MatchesRoutes';
 
 class App {
   public app: express.Express;
   public login = loginRoutes;
   public teams = teamRoutes;
-  public matches = getAllMatches;
+  public matches = matcheRoutes;
   // public midError = errorHandler;
   constructor() {
     this.app = express();
@@ -24,9 +25,10 @@ class App {
     };
     this.app.use(express.json());
     this.app.use(accessControl);
+    // this.app.use(cors());
     this.app.use('/login', loginRoutes);
     this.app.use('/teams', teamRoutes);
-    this.app.use('/matches', getAllMatches);
+    this.app.use('/matches', matcheRoutes);
     this.app.use(errorHandler);
   }
 
