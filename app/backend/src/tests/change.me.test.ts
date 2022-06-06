@@ -286,7 +286,7 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.body).to.have.property('id');
       expect(chaiHttpResponse.body).to.have.property('teamName');
     });
-  })
+  });
 
   describe('Testar integridade da rota /matches com o método Get', () => {
     const matchesArray = [
@@ -365,7 +365,7 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.status).to.be.equal(200);
     })
   });
-  describe('Testar integridade da rota /matches com o método Post', () => {
+  describe('Testar integridade da rota /matches com o método Post em caso de sucesso', () => {
 
     let chaiHttpResponse: Response;
 
@@ -373,19 +373,21 @@ describe('testar a integridade da rota /teams', () => {
       sinon
         .stub(Matche, 'create')
         .resolves({
-            id: 1,
-            homeTeam: 16,
-            homeTeamGoals: 2,
-            awayTeam: 8,
-            awayTeamGoals: 2,
-            inProgress: true,
-          } as unknown as Matche);
-      sinon.stub(jwt, 'verify').resolves({ id: 1 })
+        id: 1,
+        homeTeam: 16,
+        homeTeamGoals: 2,
+        awayTeam: 8,
+        awayTeamGoals: 2,
+        inProgress: true,
+      } as unknown as Matche);
+      sinon.stub(jwt, 'verify').resolves({ id: 1 });
+      sinon.stub(Team, 'findByPk').resolves();
     });
 
     after(() => {
       (Matche.create as sinon.SinonStub).restore();
       (jwt.verify as sinon.SinonStub).restore();
+      (Team.findByPk as sinon.SinonStub).restore();
     });
     it('Requisição retorna com status code 201', async () => {
       chaiHttpResponse = await chai
@@ -402,6 +404,75 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.status).to.be.equal(201);
     });
   });
+
+  describe('Testar integridade da rota /matches com o método Post em caso de erro', () => {
+  
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'create')
+        .resolves();
+      sinon.stub(jwt, 'verify').resolves({ id: 1 })
+    });
+
+    after(() => {
+      (Matche.create as sinon.SinonStub).restore();
+      (jwt.verify as sinon.SinonStub).restore();
+    });
+
+    it('Requisição retorna com status code 401', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', 'token')
+        .send({
+          homeTeam: 8,
+          awayTeam: 8,
+          homeTeamGoals: 2,
+          awayTeamGoals: 2,
+          inProgress: true
+        })
+
+      expect(chaiHttpResponse.status).to.be.equal(401);
+    });
+  });
+
+  describe('Testar integridade da rota /matches com o método Post em caso de erro', () => {
+  
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'create')
+        .resolves();
+      sinon.stub(jwt, 'verify').resolves({ id: 1 })
+      sinon.stub(Team, 'findByPk').resolves(null);      
+    });
+
+    after(() => {
+      (Matche.create as sinon.SinonStub).restore();
+      (jwt.verify as sinon.SinonStub).restore();
+      (Team.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('Requisição retorna com status code 404', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .set('authorization', 'token')
+        .send({
+          homeTeam: 20,
+          awayTeam: 8,
+          homeTeamGoals: 2,
+          awayTeamGoals: 2,
+          inProgress: true
+        })
+
+      expect(chaiHttpResponse.status).to.be.equal(404);
+    });
+  });
+
   describe('Testar integridade da rota /matches/:id/finish com o método Patch', () => {
 
     let chaiHttpResponse: Response;
@@ -426,5 +497,3 @@ describe('testar a integridade da rota /teams', () => {
     });
   });
 });
-
-
