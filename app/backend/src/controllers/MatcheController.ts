@@ -56,6 +56,19 @@ class MatcheController {
       next(error);
     }
   };
+
+  public updateScoreboard = async (req: Request, res: Response, next: NextFunction)
+  :Promise<Response | void> => {
+    try {
+      const { id } = req.params;
+      const { homeTeamGoals, awayTeamGoals } = req.body;
+
+      await this.service.updateScoreboard(+id, homeTeamGoals, awayTeamGoals);
+      return res.status(StatusCodes.OK).json({ message: 'matche updated' });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 
 export default MatcheController;
