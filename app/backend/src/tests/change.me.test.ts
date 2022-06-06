@@ -220,8 +220,8 @@ describe('testar a rota /loginValidate da rota login', () => {
     });
 });
 
-describe('testar a integridade da rota /teams', () => {
-  describe('Em caso de sucesso', () => {
+describe('testar demais rotas', () => {
+  describe('testar a integridade da rota /teams', () => {
     const teamsArray = [
       {
         id: 1,
@@ -249,7 +249,7 @@ describe('testar a integridade da rota /teams', () => {
       (Team.findAll as sinon.SinonStub).restore();
     });
 
-    it('Verifica se status code 200 e propriedades dos objetos do array', async () => {
+    it('Verifica se status code 200 e propriedades dos objetos do array, em caso de sucesso', async () => {
       chaiHttpResponse = await chai
         .request(app)
         .get('/teams')
@@ -481,6 +481,7 @@ describe('testar a integridade da rota /teams', () => {
       sinon
         .stub(Matche, 'update')
         .resolves({ message: "Finished" } as any);
+    
     });
 
     after(() => {
@@ -496,4 +497,40 @@ describe('testar a integridade da rota /teams', () => {
       expect(chaiHttpResponse.status).to.be.equal(200);
     });
   });
+
+  describe('testar integridade da rota /matches/:id com o método Patch', () => {
+    let chaiHttpResponse: Response;
+
+    before(async () => {
+      sinon
+        .stub(Matche, 'update')
+        .resolves({ message: 'matche updated' } as any);
+        sinon.stub(Matche, 'findByPk').resolves({
+          id: 1,
+          homeTeam: 16,
+          homeTeamGoals: 2,
+          awayTeam: 8,
+          awayTeamGoals: 2,
+          inProgress: true,
+        } as unknown as Matche);
+      });
+
+    after(() => {
+      (Matche.update as sinon.SinonStub).restore();
+      (Matche.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('Requisição retorna com status code 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .patch('/matches/1')
+        .set('params', 'id: 1')
+        .send({
+          homeTeamGoals: 3,
+          awayTeamGoals: 3,
+        })
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+    });
+  })
 });
