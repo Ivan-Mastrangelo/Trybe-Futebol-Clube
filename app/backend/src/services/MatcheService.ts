@@ -61,7 +61,13 @@ class MatcheService {
     homeTeamGoals: number,
     awayTeam: number,
     awayTeamGoals: number,
-  ): Promise<Matche> => {
+  ): Promise<Matche | string> => {
+    if (homeTeam === awayTeam) return ('error');
+
+    const firstTeam = await Team.findByPk(homeTeam);
+    const secondTeam = await Team.findByPk(awayTeam);
+
+    if (firstTeam === null || secondTeam === null) return ('team not found');
     const newMatche = await Matche.create({
       homeTeam,
       homeTeamGoals,
