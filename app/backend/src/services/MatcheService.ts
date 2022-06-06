@@ -83,6 +83,16 @@ class MatcheService {
 
     return { message: 'Finished' };
   };
+
+  public updateScoreboard = async (id: number, homeTeamGoals: number, awayTeamGoals: number)
+  : Promise<boolean> => {
+    const matche = await Matche.findByPk(id);
+    if (matche?.inProgress === true) {
+      await Matche.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+      return true;
+    }
+    return false;
+  };
 }
 
 export default MatcheService;
