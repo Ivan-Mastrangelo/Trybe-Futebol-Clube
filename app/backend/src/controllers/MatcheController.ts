@@ -32,6 +32,14 @@ class MatcheController {
       const { homeTeam, homeTeamGoals, awayTeam, awayTeamGoals } = req.body;
       const newInProgressMatche = await this.service
         .createMatcheInProgress(homeTeam, homeTeamGoals, awayTeam, awayTeamGoals);
+      if (newInProgressMatche === 'error') {
+        return res.status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'It is not possible to create a match with two equal teams' });
+      }
+      if (newInProgressMatche === 'team not found') {
+        return res.status(StatusCodes.NOT_FOUND)
+          .json({ message: 'There is no team with such id!' });
+      }
       return res.status(StatusCodes.CREATED).json(newInProgressMatche);
     } catch (error) {
       next(error);
