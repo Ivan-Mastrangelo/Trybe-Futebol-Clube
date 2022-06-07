@@ -8,6 +8,7 @@ import { app } from '../app';
 import User from '../database/models/UserModel';
 import Team from '../database/models/TeamModel';
 import Matche from '../database/models/MatcheModel';
+// import LeaderboardHomeService from '../services/LeaderboardHomeService';
 
 import { Response } from 'superagent';
 import TokenGenerate from '../helpers/TokenGenerate';
@@ -512,7 +513,7 @@ describe('testar demais rotas', () => {
           awayTeam: 8,
           awayTeamGoals: 2,
           inProgress: true,
-        } as unknown as Matche);
+        } as Matche);
       });
 
     after(() => {
@@ -531,6 +532,362 @@ describe('testar demais rotas', () => {
         })
 
       expect(chaiHttpResponse.status).to.be.equal(200);
+    });
+  })
+  describe('Testar integridade da rota /leaderboard/home', () => {
+    let chaiHttpResponse: Response;
+    const matchesArray = [
+      {
+        home_team: 16,
+        home_team_goals: 1,
+        away_team: 8,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 9,
+        home_team_goals: 1,
+        away_team: 14,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 4,
+        home_team_goals: 3,
+        away_team: 11,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 3,
+        home_team_goals: 0,
+        away_team: 2,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 7,
+        home_team_goals: 1,
+        away_team: 10,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 5,
+        home_team_goals: 1,
+        away_team: 13,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 12,
+        home_team_goals: 2,
+        away_team: 6,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 15,
+        home_team_goals: 0,
+        away_team: 1,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 1,
+        home_team_goals: 0,
+        away_team: 12,
+        away_team_goals: 3,
+        in_progress: false,
+      },
+      {
+        home_team: 2,
+        home_team_goals: 0,
+        away_team: 9,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 13,
+        home_team_goals: 1,
+        away_team: 3,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 6,
+        home_team_goals: 0,
+        away_team: 4,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 8,
+        home_team_goals: 2,
+        away_team: 5,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 14,
+        home_team_goals: 2,
+        away_team: 16,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 10,
+        home_team_goals: 0,
+        away_team: 15,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 11,
+        home_team_goals: 0,
+        away_team: 7,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 1,
+        home_team_goals: 2,
+        away_team: 8,
+        away_team_goals: 3,
+        in_progress: false,
+      },
+      {
+        home_team: 12,
+        home_team_goals: 4,
+        away_team: 5,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 11,
+        home_team_goals: 2,
+        away_team: 2,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 7,
+        home_team_goals: 0,
+        away_team: 9,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 6,
+        home_team_goals: 3,
+        away_team: 13,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 4,
+        home_team_goals: 3,
+        away_team: 3,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 15,
+        home_team_goals: 2,
+        away_team: 16,
+        away_team_goals: 3,
+        in_progress: false,
+      },
+      {
+        home_team: 10,
+        home_team_goals: 2,
+        away_team: 14,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 2,
+        home_team_goals: 0,
+        away_team: 6,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 13,
+        home_team_goals: 1,
+        away_team: 1,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 5,
+        home_team_goals: 1,
+        away_team: 15,
+        away_team_goals: 2,
+        in_progress: false,
+      },
+      {
+        home_team: 16,
+        home_team_goals: 3,
+        away_team: 7,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 9,
+        home_team_goals: 0,
+        away_team: 4,
+        away_team_goals: 4,
+        in_progress: false,
+      },
+      {
+        home_team: 3,
+        home_team_goals: 0,
+        away_team: 12,
+        away_team_goals: 4,
+        in_progress: false,
+      },
+      {
+        home_team: 8,
+        home_team_goals: 2,
+        away_team: 10,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 14,
+        home_team_goals: 5,
+        away_team: 11,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 1,
+        home_team_goals: 1,
+        away_team: 16,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 9,
+        home_team_goals: 3,
+        away_team: 6,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 10,
+        home_team_goals: 1,
+        away_team: 5,
+        away_team_goals: 3,
+        in_progress: false,
+      },
+      {
+        home_team: 2,
+        home_team_goals: 0,
+        away_team: 7,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 15,
+        home_team_goals: 0,
+        away_team: 13,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 14,
+        home_team_goals: 2,
+        away_team: 4,
+        away_team_goals: 1,
+        in_progress: false,
+      },
+      {
+        home_team: 3,
+        home_team_goals: 2,
+        away_team: 11,
+        away_team_goals: 0,
+        in_progress: false,
+      },
+      {
+        home_team: 12,
+        home_team_goals: 4,
+        away_team: 8,
+        away_team_goals: 1,
+        in_progress: false,
+      }
+    ];
+
+    const teamsArray = [
+      {
+        team_name: 'Avaí/Kindermann',
+      },
+      {
+        team_name: 'Bahia',
+      },
+      {
+        team_name: 'Botafogo',
+      },
+      {
+        team_name: 'Corinthians',
+      },
+      {
+        team_name: 'Grêmio',
+      },
+      {
+        team_name: 'Internacional',
+      },
+      {
+        team_name: 'Minas Brasília',
+      },
+      {
+        team_name: 'Napoli-SC',
+      },
+      {
+        team_name: 'Palmeiras',
+      },
+      {
+        team_name: 'Real Brasília',
+      },
+      {
+        team_name: 'Santos',
+      },
+     {
+        team_name: 'São José-SP',
+      }, 
+      {
+        team_name: 'São Paulo',
+      },
+    ];
+
+    before(async () => {
+      sinon.stub(Matche, 'findAll').resolves(matchesArray as any);
+      sinon.stub(Team, 'findAll').resolves(teamsArray as any)
+      });
+
+    after(() => {
+      (Matche.findAll as sinon.SinonStub).restore();
+      (Team.findAll as sinon.SinonStub).restore();
+    });
+
+    it('Requisição retorna com status code 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/leaderboard/home')       
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      // expect(chaiHttpResponse.body[1]).to.have.property('name');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalPoints');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalGames');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalVictories');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalDraws');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalLosses');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsFavor');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsOwn');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsBalance');
+      expect(chaiHttpResponse.body[1]).to.have.property('efficiency');
+
     });
   })
 });
