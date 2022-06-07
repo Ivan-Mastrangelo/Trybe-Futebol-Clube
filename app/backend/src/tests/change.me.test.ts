@@ -8,7 +8,7 @@ import { app } from '../app';
 import User from '../database/models/UserModel';
 import Team from '../database/models/TeamModel';
 import Matche from '../database/models/MatcheModel';
-// import LeaderboardHomeService from '../services/LeaderboardHomeService';
+// import LeaderboardHomeService, { sortedTable } from '../services/LeaderboardHomeService';
 
 import { Response } from 'superagent';
 import TokenGenerate from '../helpers/TokenGenerate';
@@ -864,6 +864,7 @@ describe('testar demais rotas', () => {
     before(async () => {
       sinon.stub(Matche, 'findAll').resolves(matchesArray as any);
       sinon.stub(Team, 'findAll').resolves(teamsArray as any)
+      // sinon.stub(LeaderboardHomeService, 'sortedTable')
       });
 
     after(() => {
