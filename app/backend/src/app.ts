@@ -4,12 +4,14 @@ import errorHandler from './middlewares/ErrorHandler';
 import teamRoutes from './routes/TeamRoutes';
 import loginRoutes from './routes/LoginRoutes';
 import matcheRoutes from './routes/MatchesRoutes';
+import leaderboardRoutes from './routes/LeaderboardHomeRoutes';
 
 class App {
   public app: express.Express;
   public login = loginRoutes;
   public teams = teamRoutes;
   public matches = matcheRoutes;
+  public leaderboard = leaderboardRoutes;
   // public midError = errorHandler;
   constructor() {
     this.app = express();
@@ -29,6 +31,7 @@ class App {
     this.app.use('/login', loginRoutes);
     this.app.use('/teams', teamRoutes);
     this.app.use('/matches', matcheRoutes);
+    this.app.use('/leaderboard', leaderboardRoutes);
     this.app.use(errorHandler);
   }
 
