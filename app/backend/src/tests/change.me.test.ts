@@ -875,6 +875,24 @@ describe('testar demais rotas', () => {
     it('Requisição retorna com status code 200', async () => {
       chaiHttpResponse = await chai
         .request(app)
+        .get('/leaderboard/away')       
+
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      // expect(chaiHttpResponse.body[1]).to.have.property('name');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalPoints');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalGames');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalVictories');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalDraws');
+      expect(chaiHttpResponse.body[1]).to.have.property('totalLosses');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsFavor');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsOwn');
+      expect(chaiHttpResponse.body[1]).to.have.property('goalsBalance');
+      expect(chaiHttpResponse.body[1]).to.have.property('efficiency');
+
+    });
+    it('Requisição retorna com status code 200', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
         .get('/leaderboard/home')       
 
       expect(chaiHttpResponse.status).to.be.equal(200);
