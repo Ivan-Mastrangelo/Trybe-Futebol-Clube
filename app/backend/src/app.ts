@@ -4,7 +4,7 @@ import errorHandler from './middlewares/ErrorHandler';
 import teamRoutes from './routes/TeamRoutes';
 import loginRoutes from './routes/LoginRoutes';
 import matcheRoutes from './routes/MatchesRoutes';
-import leaderboardRoutes from './routes/LeaderboardHomeRoutes';
+import leaderboardRoutes from './routes/LeaderboardRoutes';
 
 class App {
   public app: express.Express;

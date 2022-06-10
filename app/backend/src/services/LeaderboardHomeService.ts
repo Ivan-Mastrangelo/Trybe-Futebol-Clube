@@ -1,19 +1,6 @@
-import ILeaderboardHome from '../interfaces/LeaderboardHomeInterface';
+import ILeaderboard from '../interfaces/LeaderboardInterface';
 import Matche from '../database/models/MatcheModel';
 import Team from '../database/models/TeamModel';
-
-type TteamRow = {
-  name: string;
-  totalPoints: number;
-  totalGames: number;
-  totalVictories: number;
-  totalDraws: number;
-  totalLosses: number;
-  goalsFavor: number;
-  goalsOwn: number;
-  goalsBalance: number;
-  efficiency: number;
-};
 
 const createTeamRow = (name: string) => ({
   name,
@@ -28,7 +15,7 @@ const createTeamRow = (name: string) => ({
   efficiency: 0,
 });
 
-const eachRow = (teamRow: TteamRow, game: Matche) => {
+const eachRow = (teamRow: ILeaderboard, game: Matche) => {
   const column = teamRow;
   column.totalGames += 1;
   column.goalsFavor += game.homeTeamGoals;
@@ -44,7 +31,7 @@ const eachRow = (teamRow: TteamRow, game: Matche) => {
 };
 
 class LeaderboardHomeService {
-  public leaderboard = async (): Promise<ILeaderboardHome[]> => {
+  public leaderboard = async (): Promise<ILeaderboard[]> => {
     const allFinishedMatches = await Matche.findAll({ where: { inProgress: false } });
     const allTeams = await Team.findAll();
     const teamTable = allTeams.map((team) => {
@@ -53,7 +40,7 @@ class LeaderboardHomeService {
         .forEach((game) => eachRow(teamRow, game));
       return teamRow;
     });
-    return teamTable as ILeaderboardHome[];
+    return teamTable as ILeaderboard[];
   };
 
   public async sortedTable() {
